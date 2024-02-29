@@ -8,6 +8,7 @@
     "baseUrl": "./src",
     "paths": {
       "@pages/*": ["pages/*"],
+      "@utils/*": ["utils/*"],
     },
 
     /* Bundler mode */
