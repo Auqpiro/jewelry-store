@@ -1,147 +1,24 @@
-import axios from "@utils/axios";
-import { useEffect, useState } from "react";
+import Layout from "@components/Layout";
+import Main from "@components/Main";
+import {
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
-type Good = {
-  id: string;
-  brand: string;
-  price: number;
-  product: string;
-};
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route path="/" element={<Layout />}>
+      <Route index element={<Main />} />
+      <Route path="*" element={<Navigate to="/" replace={true} />} />
+    </Route>
+  )
+);
 
 function App() {
-  const [ids, setIds] = useState<string[]>([]);
-  const [goods, setGoods] = useState<Good[]>([]);
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     try {
-  //       const { data } = await axios.post(
-  //         API_URL,
-  //         {
-  //           action: "get_ids",
-  //           params: { offset: 0, limit: 50 },
-  //         },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             "X-Auth": `${md5(`Valantis_${timestamp}`)}`,
-  //           },
-  //           transformResponse: [
-  //             function (data) {
-  //               const { result }: { result: string[] } = JSON.parse(data);
-  //               const list = new Set(result);
-  //               return Array.from(list);
-  //             },
-  //           ],
-  //         }
-  //       );
-  //       setIds(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   const timeoutID = setTimeout(fetch);
-  //   return () => clearTimeout(timeoutID);
-  // }, []);
-  // получение товаров по id
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const { data } = await axios.post(
-          "/",
-          {
-            action: "get_items",
-            params: { ids },
-          },
-          {
-            transformResponse: [
-              function (data) {
-                const { result }: { result: Good[] } = JSON.parse(data);
-                const uniqGoods: Good[] = result.reduce((acc, good) => {
-                  const { id } = good;
-                  const isListed = acc.find((good) => good.id === id);
-                  return isListed ? acc : acc.concat([good]);
-                }, [] as Good[]);
-                return uniqGoods;
-              },
-            ],
-          }
-        );
-        setGoods(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const timeoutID = setTimeout(fetch);
-    return () => clearTimeout(timeoutID);
-  }, [ids]);
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        const { data } = await axios.post(
-          "/",
-          {
-            action: "filter",
-            params: { product: "колье" },
-          },
-          {
-            transformResponse: [
-              function (data) {
-                const { result } = JSON.parse(data);
-                const list = new Set(result);
-                return Array.from(list);
-              },
-            ],
-          }
-        );
-        setIds(data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const timeoutID = setTimeout(fetch);
-    return () => clearTimeout(timeoutID);
-  }, []);
-  // useEffect(() => {
-  //   const fetch = async () => {
-  //     try {
-  //       const { data } = await axios.post(
-  //         API_URL,
-  //         {
-  //           action: "get_fields",
-  //           params: {field: "price"},
-  //         },
-  //         {
-  //           headers: {
-  //             "Content-Type": "application/json",
-  //             "X-Auth": `${md5(`Valantis_${timestamp}`)}`,
-  //           },
-  //           transformResponse: [
-  //             function (data) {
-  //               const { result } = JSON.parse(data);
-  //               const list = new Set(result);
-  //               return Array.from(list);
-  //             },
-  //           ],
-  //         }
-  //       );
-  //       setGoods(data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   const timeoutID = setTimeout(fetch);
-  //   return () => clearTimeout(timeoutID);
-  // }, []);
-  return (
-    <>
-      <p>Список имеет длину: {goods.length}</p>
-      <ol>
-        {goods.map((good) => (
-          <li key={good.id}>{JSON.stringify(good)}</li>
-        ))}
-      </ol>
-    </>
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;

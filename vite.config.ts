@@ -8,7 +8,9 @@ export default defineConfig({
   resolve: {
     alias: {
       "@pages": path.join(__dirname, "./src/pages/"),
-      "@utils": path.join(__dirname, "./src/utils/")
+      "@utils": path.join(__dirname, "./src/utils/"),
+      "@components": path.join(__dirname, "./src/components/"),
+      "@store": path.join(__dirname, "./src/store/"),
     },
   },
 });
