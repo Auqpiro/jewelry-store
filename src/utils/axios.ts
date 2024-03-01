@@ -3,8 +3,6 @@ import md5 from "md5";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
-console.log(API_URL);
-
 const currentDate = new Date();
 const shiftHourFromRuCentralToUTC = 3;
 const shiftDayFromCurrentToRuCentral = Math.floor((currentDate.getUTCHours() + shiftHourFromRuCentralToUTC) / 24);
