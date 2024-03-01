@@ -4,7 +4,12 @@ import { fetchIdsFilter } from "@store/slices/filter";
 
 const pageItemsCount = 50;
 
-const initialState = {
+type InitialState = {
+  currentPage: number;
+  maxPage: number;
+};
+
+const initialState: InitialState = {
   currentPage: 1,
   maxPage: 1,
 };
