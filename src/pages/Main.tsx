@@ -1,3 +1,6 @@
+import PanelFilter from "@components/Filter/Panel";
+import PanelItems from "@components/Items/Panel";
+import Pagination from "@components/Pagination";
 
 /*
   redux thunk
@@ -13,8 +16,13 @@
 */
 function Main() {
   return (
-    <div>Main</div>
-  )
+    <div>
+      <div>Main</div>
+      <PanelFilter/>
+      <PanelItems/>
+      <Pagination />
+    </div>
+  );
 }
 
-export default Main
+export default Main;

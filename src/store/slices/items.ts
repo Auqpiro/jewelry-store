@@ -1,9 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "@utils/axios";
-import { rootStore } from "@store/index";
+import { rootState } from "@store/index";
 import { fetchFields, fetchIdsFilter } from "@store/slices/filter";
 
-const fetchIdsAll = createAsyncThunk("fetchIdsAll", async () => {
+const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async () => {
   const fetch = async () => {
     const { data }: { data: string[] } = await axios.post(
       "/",
@@ -39,9 +39,8 @@ const init = createAsyncThunk("init", (_, thunkAPI) => {
   thunkAPI.dispatch(fetchFields());
 });
 
-const loadCurrentPage = createAsyncThunk("loadCurrentPage", async (_, thunkAPI) => {
-  const store = thunkAPI.getState() as rootStore;
-  const state = store.getState();
+const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thunkAPI) => {
+  const state = thunkAPI.getState() as rootState;
   const currentPage = state.pagination.currentPage;
   const pageItemsCount = 50;
   const padBegin = (currentPage - 1) * pageItemsCount + 1;
@@ -91,13 +90,19 @@ type Good = {
 type InitialState = {
   ids: string[];
   items: Good[];
-  isFetching: boolean;
+  isFetching: {
+    ids: boolean;
+    items: boolean;
+  };
 };
 
 const initialState: InitialState = {
   ids: [],
   items: [],
-  isFetching: true,
+  isFetching: {
+    ids: true,
+    items: false,
+  },
 };
 
 const items = createSlice({
@@ -107,22 +112,24 @@ const items = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchIdsAll.pending, (state) => {
-        state.isFetching = true;
+        state.isFetching.ids = true;
       })
       .addCase(fetchIdsAll.fulfilled, (state, { payload }) => {
+        state.isFetching.ids = false;
         state.ids = payload;
       })
       .addCase(fetchIdsFilter.pending, (state) => {
-        state.isFetching = true;
+        state.isFetching.ids = true;
       })
       .addCase(fetchIdsFilter.fulfilled, (state, { payload }) => {
+        state.isFetching.ids = false;
         state.ids = payload;
       })
       .addCase(loadCurrentPage.pending, (state) => {
-        state.isFetching = true;
+        state.isFetching.items = true;
       })
       .addCase(loadCurrentPage.fulfilled, (state, { payload }) => {
-        state.isFetching = false;
+        state.isFetching.items = false;
         state.items = payload;
       });
   },

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { rootStore } from "@store/index";
+import { rootState } from "@store/index";
 import axios from "@utils/axios";
 
 const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (type: string) => {
@@ -73,8 +73,7 @@ const fetchFields = createAsyncThunk("filter/fetchFields", async (_, thunkAPI) =
 });
 
 const fetchIdsFilter = createAsyncThunk("filter/fetchIdsFilter", async (search: string, thunkAPI) => {
-  const store = thunkAPI.getState() as rootStore;
-  const state = store.getState();
+  const state = thunkAPI.getState() as rootState;
   const type = state.filter.type as string;
   const fetch = async () => {
     const { data } = await axios.post(
