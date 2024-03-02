@@ -1,7 +1,7 @@
+import { Outlet } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { appDispatch, rootState } from "@store/index";
 import { fetchIdsAll } from "@store/slices/items";
-import { useDispatch, useSelector } from "react-redux";
-import { Outlet } from "react-router-dom";
 
 function Layout() {
   const dispatch = useDispatch<appDispatch>();

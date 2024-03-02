@@ -1,5 +1,5 @@
-import { rootState } from "@store/index"
 import { useSelector } from "react-redux"
+import { rootState } from "@store/index"
 
 function Pagination() {
   const {currentPage, maxPage} = useSelector((state: rootState) => {
