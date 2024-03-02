@@ -1,9 +1,21 @@
+import { appDispatch, rootState } from "@store/index";
+import { fetchIdsAll } from "@store/slices/items";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet } from "react-router-dom";
 
 function Layout() {
+  const dispatch = useDispatch<appDispatch>();
+  const isFetchIds = useSelector((state: rootState) => state.items.isFetching.ids);
+  const isFetchItem = useSelector((state: rootState) => state.items.isFetching.items);
+  const isFetch = isFetchIds || isFetchItem;
+  const onClick = () => {
+    if (!isFetch) {
+      dispatch(fetchIdsAll());
+    }
+  };
   return (
     <>
-      <div>Layout</div>
+      <button onClick={onClick}>Layout</button>
       <Outlet />
     </>
   );

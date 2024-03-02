@@ -4,11 +4,21 @@ import md5 from "md5";
 const API_URL = import.meta.env.VITE_API_URL;
 
 const currentDate = new Date();
+
 const shiftHourFromRuCentralToUTC = 3;
-const shiftDayFromCurrentToRuCentral = Math.floor((currentDate.getUTCHours() + shiftHourFromRuCentralToUTC) / 24);
-const currentYear = currentDate.getFullYear();
-const currentMonth = `${currentDate.getMonth() + 1}`.padStart(2, "0");
-const currentDay = `${currentDate.getDate() + shiftDayFromCurrentToRuCentral}`.padStart(2, "0");
+const shiftDate = currentDate.getUTCHours() + shiftHourFromRuCentralToUTC >= 24 ? 1 : 0;
+const currentDay = `${currentDate.getUTCDate() + shiftDate}`.padStart(2, "0");
+
+const currentUTCYear = currentDate.getUTCFullYear();
+const isLeapYear = currentUTCYear % 4 === 0 && (currentUTCYear % 100 !== 0 || currentUTCYear % 400 === 0);
+const lastDateFeb = isLeapYear ? 29 : 28;
+const lastDateInMouthes = [31, lastDateFeb, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const shiftMonth = currentDate.getUTCDate() === lastDateInMouthes[currentDate.getUTCMonth()] ? shiftDate : 0;
+const currentMonth = `${currentDate.getMonth() + 1 + shiftMonth}`.padStart(2, "0");
+
+const shiftYear = currentDate.getUTCMonth() === 11 && shiftMonth ? shiftMonth + 1 : shiftMonth;
+const currentYear = currentDate.getUTCFullYear() + shiftYear;
+
 const timestamp = `${currentYear}${currentMonth}${currentDay}`;
 
 const instance = axios.create({
