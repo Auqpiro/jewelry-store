@@ -11,9 +11,19 @@ const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (
         transformResponse: [
           (data) => {
             const { result } = JSON.parse(data);
-            const uniqOptionsType = new Set(result);
-            uniqOptionsType.delete(null);
-            return Array.from(uniqOptionsType);
+            const optionsSet = new Set(result);
+            optionsSet.delete(null);
+            const options = [...optionsSet] as (string | number)[];
+            options.sort((a: string | number, b: string | number) => {
+              if (typeof a === "number" && typeof b === "number") {
+                return a - b;
+              }
+              if (typeof a === "string" && typeof b === "string") {
+                return a.localeCompare(b);
+              }
+              return 0;
+            });
+            return options;
           },
         ],
       }
@@ -72,7 +82,7 @@ const fetchFields = createAsyncThunk("filter/fetchFields", async (_, thunkAPI) =
   }
 });
 
-const fetchIdsFilter = createAsyncThunk("filter/fetchIdsFilter", async (search: string, thunkAPI) => {
+const fetchIdsFilter = createAsyncThunk("filter/fetchIdsFilter", async (search: string | number, thunkAPI) => {
   const state = thunkAPI.getState() as rootState;
   const type = state.filter.type as string;
   const fetch = async () => {

@@ -1,9 +1,8 @@
-import { appDispatch, rootState } from "@store/index";
-import { fetchIdsFilter, selectFilterType } from "@store/slices/filter";
-import { useDebounce } from "@hooks/useDebounce";
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchIdsAll } from "@store/slices/items";
+import { useDebounce } from "@hooks/useDebounce";
+import { fetchIdsFilter, selectFilterType } from "@store/slices/filter";
+import { appDispatch, rootState } from "@store/index";
 
 const currentFilterType = "product";
 
@@ -14,51 +13,43 @@ function Search() {
 
   const onSelect = () => dispatch(selectFilterType(currentFilterType));
 
-  const onSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    /*
-    keep this event handler
-    when the user calls the form to submit using the Enter key
-    it will lead to nothing
-    by this time the useEffect will work with debouncedSearch and the search will go
-    */
-  };
-
   const [search, setSearch] = useState("");
   const onChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (currentFilterType !== type) {
       dispatch(selectFilterType(currentFilterType));
     }
-    console.log(event.target.value);
-
     setSearch(event.target.value);
   };
 
-  const debouncedSearch = useDebounce(search, 1000);
+  const debouncedSearch = useDebounce("", search, 1000);
   useEffect(() => {
-    if (!debouncedSearch) {
-      dispatch(fetchIdsAll());
-    } else {
-      dispatch(fetchIdsFilter(debouncedSearch));
+    if (currentFilterType !== type) {
+      return;
     }
-  }, [dispatch, debouncedSearch]);
+    const id = setTimeout(() => {
+      if (debouncedSearch) {
+        dispatch(fetchIdsFilter(debouncedSearch));
+      }
+    });
+    return () => clearTimeout(id);
+  }, [dispatch, debouncedSearch, type]);
 
-  const formRef = useRef<HTMLFormElement | null>(null);
+  const inputRef = useRef<HTMLInputElement | null>(null);
   useEffect(() => {
-    if (formRef.current && !type) {
-      formRef.current.reset();
+    if (inputRef.current && !type) {
+      inputRef.current.value = "";
     }
-    if (formRef.current && type && currentFilterType !== type) {
-      formRef.current.reset();
+    if (inputRef.current && type && currentFilterType !== type) {
+      inputRef.current.value = "";
     }
   }, [type]);
 
   return (
     <div>
       <div onClick={onSelect}>{currentFilterType === type ? "!" : ""}Search</div>
-      <form ref={formRef} onSubmit={onSubmit}>
-        <input type="text" onChange={onChange} />
-      </form>
+      <label htmlFor="search"></label>
+      <br />
+      <input type="text" id="search" name={currentFilterType} ref={inputRef} onChange={onChange} />
     </div>
   );
 }
