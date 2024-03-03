@@ -1,8 +1,8 @@
+import { useEffect } from "react";
 import { RouterProvider, createBrowserRouter, createRoutesFromElements, Route, Navigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import Layout from "@components/Layout";
 import Main from "@pages/Main";
-import { useEffect } from "react";
-import { useDispatch } from "react-redux";
 import { init } from "@store/slices/items";
 import { appDispatch } from "@store/index";
 
@@ -18,9 +18,14 @@ const router = createBrowserRouter(
 function App() {
   const dispatch = useDispatch<appDispatch>();
   useEffect(() => {
-    const timeoutId = setTimeout(() => dispatch(init()))
-    return () => clearTimeout(timeoutId)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => dispatch(init(controller.signal)));
+    return () => {
+      clearTimeout(timeoutId);
+      controller.abort()
+    };
   }, [dispatch]);
+  
   return <RouterProvider router={router} />;
 }
 

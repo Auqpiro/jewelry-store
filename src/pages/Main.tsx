@@ -9,7 +9,6 @@ function Main() {
       <PanelFilter/>
       <Pagination />
       <PanelItems/>
-      <Pagination />
     </div>
   );
 }

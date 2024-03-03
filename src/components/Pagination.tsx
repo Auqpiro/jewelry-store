@@ -1,9 +1,9 @@
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { appDispatch, rootState } from "@store/index";
+import { useThrottle } from "@hooks/useThrottle";
 import { changePage } from "@store/slices/pagination";
 import { loadCurrentPage } from "@store/slices/items";
-import { useEffect, useState } from "react";
-import { useThrottle } from "@hooks/useThrottle";
+import { appDispatch, rootState } from "@store/index";
 
 function Pagination() {
   const { currentPage, maxPage } = useSelector((state: rootState) => {
@@ -24,11 +24,17 @@ function Pagination() {
   const throttledPage = useThrottle(currentPage, page);
   const dispatch = useDispatch<appDispatch>();
   useEffect(() => {
+    const controller = new AbortController();
     if (isTouched) {
       dispatch(changePage(throttledPage));
-      dispatch(loadCurrentPage());
+      dispatch(loadCurrentPage(controller.signal));
     }
+    return () => controller.abort();
   }, [dispatch, throttledPage, isTouched]);
+
+  useEffect(() => {
+    setPage(currentPage);
+  }, [currentPage]);
 
   return (
     <div>

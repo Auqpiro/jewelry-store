@@ -1,10 +1,11 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import axios from "axios";
+import axiosInstance from "@utils/axios";
 import { rootState } from "@store/index";
-import axios from "@utils/axios";
 
 const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (type: string) => {
   const fetch = async () => {
-    const { data }: { data: (string | number)[] } = await axios.post(
+    const { data }: { data: (string | number)[] } = await axiosInstance.post(
       "/",
       { action: "get_fields", params: { field: type } },
       {
@@ -37,7 +38,7 @@ const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (
       entities,
     };
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof Error || axios.isCancel(error)) {
       console.error(error.message);
     } else {
       console.error(error);
@@ -50,71 +51,44 @@ const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (
   }
 });
 
-const fetchFields = createAsyncThunk("filter/fetchFields", async (_, thunkAPI) => {
-  const fetch = async () => {
-    const { data }: { data: string[] } = await axios.post(
-      "/",
-      { action: "get_fields" },
-      {
-        transformResponse: [
-          (data) => {
-            const { result } = JSON.parse(data);
-            return result;
-          },
-        ],
+const fetchIdsFilter = createAsyncThunk(
+  "filter/fetchIdsFilter",
+  async (payload: { search: string | number; abortSignal: AbortSignal }, thunkAPI) => {
+    const { search, abortSignal } = payload;
+    const state = thunkAPI.getState() as rootState;
+    const type = state.filter.type as string;
+    const fetch = async () => {
+      const { data } = await axios.post(
+        "/",
+        {
+          action: "filter",
+          params: { [type]: search },
+        },
+        {
+          transformResponse: [
+            function (data) {
+              const { result } = JSON.parse(data);
+              const uniqSearchedIds = new Set(result);
+              return Array.from(uniqSearchedIds);
+            },
+          ],
+          signal: abortSignal,
+        }
+      );
+      return data;
+    };
+    try {
+      return await fetch();
+    } catch (error) {
+      if (error instanceof Error || axios.isCancel(error)) {
+        console.error(error.message);
+      } else {
+        console.error(error);
       }
-    );
-    return data;
-  };
-  try {
-    const fields = await fetch();
-    const iterableFieldTypes = fields.filter((field) => field !== "product");
-    iterableFieldTypes.forEach((type) => thunkAPI.dispatch(fetchFilterOptions(type)));
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    } else {
-      console.error(error);
+      return await fetch();
     }
-    const fields = await fetch();
-    const iterableFieldTypes = fields.filter((field) => field !== "product");
-    iterableFieldTypes.forEach((type) => thunkAPI.dispatch(fetchFilterOptions(type)));
   }
-});
-
-const fetchIdsFilter = createAsyncThunk("filter/fetchIdsFilter", async (search: string | number, thunkAPI) => {
-  const state = thunkAPI.getState() as rootState;
-  const type = state.filter.type as string;
-  const fetch = async () => {
-    const { data } = await axios.post(
-      "/",
-      {
-        action: "filter",
-        params: { [type]: search },
-      },
-      {
-        transformResponse: [
-          function (data) {
-            const { result } = JSON.parse(data);
-            const uniqSearchedIds = new Set(result);
-            return Array.from(uniqSearchedIds);
-          },
-        ],
-      }
-    );
-    return data;
-  };
-  try {
-    return await fetch();
-  } catch (error) {
-    if (error instanceof Error) {
-      console.error(error.message);
-    } else {
-      console.error(error);
-    }
-    return await fetch();
-  }
-});
+);
 
 type InitialState = {
   type: null | string;
@@ -147,6 +121,6 @@ const filter = createSlice({
 
 export const { selectFilterType } = filter.actions;
 
-export { fetchFilterOptions, fetchFields, fetchIdsFilter };
+export { fetchFilterOptions, fetchIdsFilter };
 
 export default filter.reducer;

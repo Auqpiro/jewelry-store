@@ -27,12 +27,18 @@ const pagination = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchIdsAll.fulfilled, (state, { payload }) => {
+      .addCase(fetchIdsAll.pending, (state) => {
         state.currentPage = 1;
+        state.maxPage = 1;
+      })
+      .addCase(fetchIdsFilter.pending, (state) => {
+        state.currentPage = 1;
+        state.maxPage = 1;
+      })
+      .addCase(fetchIdsAll.fulfilled, (state, { payload }) => {
         state.maxPage = Math.ceil(payload.length / pageItemsCount);
       })
       .addCase(fetchIdsFilter.fulfilled, (state, { payload }) => {
-        state.currentPage = 1;
         state.maxPage = Math.ceil(payload.length / pageItemsCount);
       });
   },

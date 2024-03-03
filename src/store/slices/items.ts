@@ -1,11 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "@utils/axios";
+import axios from "axios";
+import axiosInstance from "@utils/axios";
+import { fetchFilterOptions, fetchIdsFilter } from "@store/slices/filter";
 import { rootState } from "@store/index";
-import { fetchFields, fetchIdsFilter } from "@store/slices/filter";
 
-const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async () => {
+const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async (abortSignal: AbortSignal) => {
   const fetch = async () => {
-    const { data }: { data: string[] } = await axios.post(
+    const { data }: { data: string[] } = await axiosInstance.post(
       "/",
       { action: "get_ids" },
       {
@@ -16,6 +17,7 @@ const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async () => {
             return Array.from(uniqIds);
           },
         ],
+        signal: abortSignal,
       }
     );
     return data;
@@ -24,7 +26,7 @@ const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async () => {
     const ids = await fetch();
     return ids;
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof Error || axios.isCancel(error)) {
       console.error(error.message);
     } else {
       console.error(error);
@@ -34,12 +36,13 @@ const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async () => {
   }
 });
 
-const init = createAsyncThunk("init", (_, thunkAPI) => {
-  thunkAPI.dispatch(fetchIdsAll());
-  thunkAPI.dispatch(fetchFields());
+const init = createAsyncThunk("init", (signal: AbortSignal, thunkAPI) => {
+  thunkAPI.dispatch(fetchIdsAll(signal));
+  thunkAPI.dispatch(fetchFilterOptions("price"));
+  thunkAPI.dispatch(fetchFilterOptions("brand"));
 });
 
-const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thunkAPI) => {
+const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (abortSignal: AbortSignal, thunkAPI) => {
   const state = thunkAPI.getState() as rootState;
   const currentPage = state.pagination.currentPage;
   const pageItemsCount = 50;
@@ -47,7 +50,7 @@ const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thun
   const allIds = state.items.ids;
   const ids = allIds.slice(padBegin, padBegin + pageItemsCount);
   const fetch = async () => {
-    const { data }: { data: Good[] } = await axios.post(
+    const { data }: { data: Good[] } = await axiosInstance.post(
       "/",
       { action: "get_items", params: { ids } },
       {
@@ -62,6 +65,7 @@ const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thun
             return uniqGoods;
           },
         ],
+        signal: abortSignal,
       }
     );
     return data;
@@ -70,7 +74,7 @@ const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thun
     const items = await fetch();
     return items;
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof Error || axios.isCancel(error)) {
       console.error(error.message);
     } else {
       console.error(error);
@@ -80,7 +84,7 @@ const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thun
   }
 });
 
-type Good = {
+export type Good = {
   id: string;
   product: string | null;
   brand: string | null;

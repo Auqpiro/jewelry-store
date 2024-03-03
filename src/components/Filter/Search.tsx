@@ -26,12 +26,11 @@ function Search() {
     if (currentFilterType !== type) {
       return;
     }
-    const id = setTimeout(() => {
-      if (debouncedSearch) {
-        dispatch(fetchIdsFilter(debouncedSearch));
-      }
-    });
-    return () => clearTimeout(id);
+    const controller = new AbortController();
+    if (debouncedSearch) {
+      dispatch(fetchIdsFilter({ search: debouncedSearch, abortSignal: controller.signal }));
+    }
+    return () => controller.abort();
   }, [dispatch, debouncedSearch, type]);
 
   const inputRef = useRef<HTMLInputElement | null>(null);

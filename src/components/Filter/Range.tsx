@@ -33,9 +33,11 @@ function Range() {
     if (currentFilterType !== type) {
       return;
     }
+    const controller = new AbortController();
     if (isTouched && debouncedRange) {
-      dispatch(fetchIdsFilter(debouncedRange));
+      dispatch(fetchIdsFilter({ search: debouncedRange, abortSignal: controller.signal }));
     }
+    return () => controller.abort();
   }, [dispatch, type, debouncedRange, isTouched]);
 
   const inputRef = useRef<HTMLInputElement | null>(null);
