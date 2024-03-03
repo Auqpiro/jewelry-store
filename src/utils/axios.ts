@@ -5,8 +5,9 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const currentDate = new Date();
 
-const shiftHourFromRuCentralToUTC = import.meta.env.VITE_SHIFT_FROM_UTC;
-const shiftDate = currentDate.getUTCHours() + shiftHourFromRuCentralToUTC >= 24 ? 1 : 0;
+const shiftHourFromRuCentralToUTC = Number(import.meta.env.VITE_SHIFT_FROM_UTC);
+const currentUTCDate = currentDate.getUTCHours()
+const shiftDate = currentUTCDate + shiftHourFromRuCentralToUTC >= 24 ? 1 : 0;
 const currentDay = `${currentDate.getUTCDate() + shiftDate}`.padStart(2, "0");
 
 const currentUTCYear = currentDate.getUTCFullYear();
@@ -20,7 +21,6 @@ const shiftYear = currentDate.getUTCMonth() === 11 && shiftMonth ? shiftMonth + 
 const currentYear = currentDate.getUTCFullYear() + shiftYear;
 
 const timestamp = `${currentYear}${currentMonth}${currentDay}`;
-console.log(timestamp);
 const authToken: string = md5(`Valantis_${timestamp}`)
 
 const abortController = new AbortController();
