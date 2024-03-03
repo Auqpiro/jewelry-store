@@ -46,10 +46,11 @@ function Search() {
 
   return (
     <div>
-      <div onClick={onSelect}>{currentFilterType === type ? "!" : ""}Search</div>
-      <label htmlFor="search"></label>
+      <label htmlFor={currentFilterType} onClick={onSelect}>
+        {currentFilterType === type ? "!" : ""}Search
+      </label>
       <br />
-      <input type="text" id="search" name={currentFilterType} ref={inputRef} onChange={onChange} />
+      <input type="text" id={currentFilterType} name={currentFilterType} ref={inputRef} onChange={onChange} />
     </div>
   );
 }

@@ -54,16 +54,17 @@ function Range() {
 
   return (
     <div>
-      <div onClick={onSelect}>{currentFilterType === type ? "!" : ""}Range</div>
-      <label htmlFor="price">{price}</label>
-      <br />
+      <label htmlFor={currentFilterType} onClick={onSelect}>
+        {currentFilterType === type ? "!" : ""}Range
+      </label>
+      <div>{price}</div>
       <input
         type="range"
-        id="price"
+        id={currentFilterType}
         name={currentFilterType}
         ref={inputRef}
         min={0}
-        max={prices.length - 1}
+        max={prices.length - 1 || 0}
         step={1}
         onChange={onChange}
       />

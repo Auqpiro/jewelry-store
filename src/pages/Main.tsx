@@ -19,6 +19,7 @@ function Main() {
     <div>
       <div>Main</div>
       <PanelFilter/>
+      <Pagination />
       <PanelItems/>
       <Pagination />
     </div>

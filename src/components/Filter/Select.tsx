@@ -1,12 +1,62 @@
-import { rootState } from "@store/index";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchIdsFilter, selectFilterType } from "@store/slices/filter";
+import { appDispatch, rootState } from "@store/index";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+
+const currentFilterType = "brand";
 
 function Select() {
-  const countOptions = useSelector((state: rootState) => {
+  const type = useSelector((state: rootState) => state.filter.type);
+
+  const options = useSelector((state: rootState) => {
     const { brand } = state.filter.options;
-    return brand.length;
+    return brand as string[];
   });
-  return <div>Select ({countOptions})</div>;
+
+  const dispatch = useDispatch<appDispatch>();
+
+  const onSelect = () => dispatch(selectFilterType(currentFilterType));
+
+  const [option, setOption] = useState("");
+  const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    if (currentFilterType !== type) {
+      dispatch(selectFilterType(currentFilterType));
+    }
+    setOption(event.target.value);
+  };
+
+  useEffect(() => {
+    if (currentFilterType !== type) {
+      return;
+    }
+    dispatch(fetchIdsFilter(option));
+  }, [dispatch, type, option]);
+
+  const optionRef = useRef<HTMLOptionElement | null>(null);
+  useEffect(() => {
+    if (optionRef.current && !type) {
+      setOption("");
+      optionRef.current.selected = true;
+    }
+    if (optionRef.current && type && currentFilterType !== type) {
+      setOption("");
+      optionRef.current.selected = true;
+    }
+  }, [type]);
+  return (
+    <div>
+      <label htmlFor={currentFilterType} onClick={onSelect}>
+        {currentFilterType === type ? "!" : ""}Select
+      </label>
+      <br />
+      <select name={currentFilterType} id={currentFilterType} onChange={onChange}>
+        <option disabled selected ref={optionRef}>
+          select option
+        </option>
+        {options.length && options.map((optionValue) => <option value={optionValue}>{optionValue}</option>)}
+      </select>
+    </div>
+  );
 }
 
 export default Select;

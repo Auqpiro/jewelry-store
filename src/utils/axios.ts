@@ -5,7 +5,7 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const currentDate = new Date();
 
-const shiftHourFromRuCentralToUTC = 3;
+const shiftHourFromRuCentralToUTC = import.meta.env.VITE_SHIFT_FROM_UTC;
 const shiftDate = currentDate.getUTCHours() + shiftHourFromRuCentralToUTC >= 24 ? 1 : 0;
 const currentDay = `${currentDate.getUTCDate() + shiftDate}`.padStart(2, "0");
 
@@ -20,13 +20,20 @@ const shiftYear = currentDate.getUTCMonth() === 11 && shiftMonth ? shiftMonth + 
 const currentYear = currentDate.getUTCFullYear() + shiftYear;
 
 const timestamp = `${currentYear}${currentMonth}${currentDay}`;
+console.log(timestamp);
+const authToken: string = md5(`Valantis_${timestamp}`)
+
+const abortController = new AbortController();
 
 const instance = axios.create({
   baseURL: API_URL,
   headers: {
     "Content-Type": "application/json",
-    "X-Auth": `${md5(`Valantis_${timestamp}`)}`,
+    "X-Auth": authToken,
   },
+  signal: abortController.signal,
 });
+
+export { abortController };
 
 export default instance;
