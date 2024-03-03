@@ -38,4 +38,6 @@ const pagination = createSlice({
   },
 });
 
+export const { changePage } = pagination.actions;
+
 export default pagination.reducer;

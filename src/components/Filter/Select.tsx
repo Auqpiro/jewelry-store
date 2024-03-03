@@ -49,11 +49,11 @@ function Select() {
         {currentFilterType === type ? "!" : ""}Select
       </label>
       <br />
-      <select name={currentFilterType} id={currentFilterType} onChange={onChange}>
-        <option disabled selected ref={optionRef}>
+      <select defaultValue={'DEFAULT'} name={currentFilterType} id={currentFilterType} onChange={onChange}>
+        <option value={"DEFAULT"} disabled ref={optionRef}>
           select option
         </option>
-        {options.length && options.map((optionValue) => <option value={optionValue}>{optionValue}</option>)}
+        {options.length && options.map((optionValue) => <option key={optionValue} value={optionValue}>{optionValue}</option>)}
       </select>
     </div>
   );

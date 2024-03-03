@@ -45,7 +45,7 @@ const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (_, thun
   const pageItemsCount = 50;
   const padBegin = (currentPage - 1) * pageItemsCount + 1;
   const allIds = state.items.ids;
-  const ids = allIds.slice(padBegin, pageItemsCount);
+  const ids = allIds.slice(padBegin, padBegin + pageItemsCount);
   const fetch = async () => {
     const { data }: { data: Good[] } = await axios.post(
       "/",
