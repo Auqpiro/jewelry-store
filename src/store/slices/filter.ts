@@ -58,7 +58,7 @@ const fetchIdsFilter = createAsyncThunk(
     const state = thunkAPI.getState() as rootState;
     const type = state.filter.type as string;
     const fetch = async () => {
-      const { data } = await axios.post(
+      const { data } = await axiosInstance.post(
         "/",
         {
           action: "filter",
