@@ -14,4 +14,5 @@ export default defineConfig({
       "@hooks": path.join(__dirname, "./src/hooks/"),
     },
   },
+  base: "/jewelry-store",
 });
