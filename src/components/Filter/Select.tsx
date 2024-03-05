@@ -52,7 +52,7 @@ function Select() {
       <article>
         <Accordion.Header onClick={onSelect}>Бренды</Accordion.Header>
         <Accordion.Body>
-          <Form.Label htmlFor={currentFilterType}>выберете бренд</Form.Label>
+          <Form.Label htmlFor={currentFilterType}>выберите бренд</Form.Label>
           <Form.Select defaultValue="DEFAULT" name={currentFilterType} id={currentFilterType} onChange={onChange}>
             <option value="DEFAULT" disabled ref={optionRef}></option>
             {options.length &&
