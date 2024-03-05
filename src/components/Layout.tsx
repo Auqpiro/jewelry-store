@@ -5,6 +5,7 @@ import { Outlet } from "react-router-dom";
 import { Container, Navbar } from "react-bootstrap";
 import Logo from "@components/Logo";
 import { appDispatch } from "@store/index";
+import { selectFilterType } from "@store/slices/filter";
 
 function Layout() {
   const [click, setClick] = useState(0);
@@ -15,6 +16,7 @@ function Layout() {
     if (!click) {
       return;
     }
+    dispatch(selectFilterType(null));
     const controller = new AbortController();
     dispatch(fetchIdsAll(controller.signal));
     return () => controller.abort();
