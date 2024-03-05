@@ -1,13 +1,15 @@
-import { useDispatch } from "react-redux";
-import { Outlet } from "react-router-dom";
-import { fetchIdsAll } from "@store/slices/items";
-import { appDispatch } from "@store/index";
 import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { fetchIdsAll } from "@store/slices/items";
+import { Outlet } from "react-router-dom";
+import { Container, Navbar } from "react-bootstrap";
+import Logo from "@components/Logo";
+import { appDispatch } from "@store/index";
 
 function Layout() {
   const [click, setClick] = useState(0);
   const onClick = () => setClick((prev) => prev + 1);
-  
+
   const dispatch = useDispatch<appDispatch>();
   useEffect(() => {
     if (!click) {
@@ -20,7 +22,16 @@ function Layout() {
 
   return (
     <>
-      <button onClick={onClick}>Layout</button>
+      <header>
+        <Navbar>
+          <Container>
+            <Navbar.Brand href="#" onClick={onClick}>
+              <Logo />
+              JEWELRY STORE
+            </Navbar.Brand>
+          </Container>
+        </Navbar>
+      </header>
       <Outlet />
     </>
   );

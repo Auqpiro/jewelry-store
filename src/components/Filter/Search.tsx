@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "@hooks/useDebounce";
 import { fetchIdsFilter, selectFilterType } from "@store/slices/filter";
+import { Accordion, Form } from "react-bootstrap";
 import { appDispatch, rootState } from "@store/index";
 
 const currentFilterType = "product";
@@ -44,13 +45,15 @@ function Search() {
   }, [type]);
 
   return (
-    <div>
-      <label htmlFor={currentFilterType} onClick={onSelect}>
-        {currentFilterType === type ? "!" : ""}Search
-      </label>
-      <br />
-      <input type="text" id={currentFilterType} name={currentFilterType} ref={inputRef} onChange={onChange} />
-    </div>
+    <Accordion.Item eventKey="0">
+      <article>
+        <Accordion.Header onClick={onSelect}>Поиск</Accordion.Header>
+        <Accordion.Body>
+          <Form.Label htmlFor={currentFilterType}>по названию</Form.Label>
+          <Form.Control type="text" id={currentFilterType} name={currentFilterType} ref={inputRef} onChange={onChange} />
+        </Accordion.Body>
+      </article>
+    </Accordion.Item>
   );
 }
 

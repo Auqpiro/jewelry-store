@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useThrottle } from "@hooks/useThrottle";
 import { changePage } from "@store/slices/pagination";
 import { loadCurrentPage } from "@store/slices/items";
+import { Container, Pagination as Page } from "react-bootstrap";
 import { appDispatch, rootState } from "@store/index";
 
 function Pagination() {
@@ -37,17 +38,15 @@ function Pagination() {
   }, [currentPage]);
 
   return (
-    <div>
-      <button onClick={prev} disabled={page === 1}>
-        prev
-      </button>
-      <span>
-        {page}/{maxPage}
-      </span>
-      <button onClick={next} disabled={page === maxPage}>
-        next
-      </button>
-    </div>
+    <Container>
+      <Page size="sm" className="justify-content-center">
+        <Page.Prev onClick={prev} disabled={page === 1} />
+        <Page.Item>
+          {page}/{maxPage}
+        </Page.Item>
+        <Page.Next onClick={next} disabled={page === maxPage} />
+      </Page>
+    </Container>
   );
 }
 

@@ -2,6 +2,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useDebounce } from "@hooks/useDebounce";
 import { fetchIdsFilter, selectFilterType } from "@store/slices/filter";
+import { Accordion, Form } from "react-bootstrap";
 import { appDispatch, rootState } from "@store/index";
 
 const currentFilterType = "price";
@@ -55,22 +56,25 @@ function Range() {
   }, [type, prices]);
 
   return (
-    <div>
-      <label htmlFor={currentFilterType} onClick={onSelect}>
-        {currentFilterType === type ? "!" : ""}Range
-      </label>
-      <div>{price}</div>
-      <input
-        type="range"
-        id={currentFilterType}
-        name={currentFilterType}
-        ref={inputRef}
-        min={0}
-        max={prices.length - 1 || 0}
-        step={1}
-        onChange={onChange}
-      />
-    </div>
+    <Accordion.Item eventKey="2">
+      <article>
+        <Accordion.Header onClick={onSelect}>Цены</Accordion.Header>
+        <Accordion.Body>
+          <div>
+            <Form.Label htmlFor={currentFilterType}>{price} р.</Form.Label>
+          </div>
+          <Form.Range
+            id={currentFilterType}
+            name={currentFilterType}
+            ref={inputRef}
+            min={0}
+            max={prices.length - 1 || 0}
+            step={1}
+            onChange={onChange}
+          />
+        </Accordion.Body>
+      </article>
+    </Accordion.Item>
   );
 }
 

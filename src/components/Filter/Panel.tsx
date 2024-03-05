@@ -1,6 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { fetchIdsAll } from "@store/slices/items";
 import { selectFilterType } from "@store/slices/filter";
+import { Accordion, Button, Container } from "react-bootstrap";
 import Search from "@components/Filter/Search";
 import Select from "@components/Filter/Select";
 import Range from "@components/Filter/Range";
@@ -8,7 +9,7 @@ import { appDispatch, rootState } from "@store/index";
 
 function PanelFilter() {
   const type = useSelector((state: rootState) => state.filter.type);
-  
+
   const dispatch = useDispatch<appDispatch>();
 
   const onClick = () => {
@@ -23,15 +24,18 @@ function PanelFilter() {
   });
 
   return (
-    <div>
-      <div>Filters</div>
-      <button disabled={isFetch || !type} onClick={onClick}>
-        reset
-      </button>
-      <Search />
-      <Select />
-      <Range />
-    </div>
+    <section>
+      <Container className="py-2 h6">Фильтрация
+      </Container>
+      <Accordion defaultActiveKey="0">
+        <Search />
+        <Select />
+        <Range />
+      </Accordion>
+      <Button disabled={isFetch || !type} onClick={onClick} className="mt-3" variant="outline-primary" size="sm">
+        СБРОС
+      </Button>
+    </section>
   );
 }
 

@@ -1,19 +1,18 @@
+import { Col, Row } from "react-bootstrap";
 import PendingItem from "@components/Items/PendingItem";
 import { ReactNode } from "react";
 
 function PendingItems() {
-  const arrayOfPending: ReactNode[] = [];
-  for (let i = 0; i < 50; i++) {
-    arrayOfPending.push(
-      <li key={i}>
-        <PendingItem />
-      </li>
-    );
-  }
+  const arrayOfPending: ReactNode[] = Array.from({ length: 50 });
   return (
-    <div>
-      <ol>{arrayOfPending && arrayOfPending.map((node) => node)}</ol>
-    </div>
+    <Row sm={1} md={3} className="g-3">
+      {arrayOfPending &&
+        arrayOfPending.map((_, ind) => (
+          <Col key={ind}>
+            <PendingItem key={ind} />
+          </Col>
+        ))}
+    </Row>
   );
 }
 

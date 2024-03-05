@@ -18,10 +18,9 @@ function PanelItems() {
     return () => controller.abort();
   }, [dispatch, isFetchIds]);
   return (
-    <div>
-      <div>Items</div>
+    <section>
       {isFetch ? <PendingItems /> : <Items />}
-    </div>
+    </section>
   );
 }
 

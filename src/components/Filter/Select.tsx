@@ -1,6 +1,7 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchIdsFilter, selectFilterType } from "@store/slices/filter";
+import { Accordion, Form } from "react-bootstrap";
 import { appDispatch, rootState } from "@store/index";
 
 const currentFilterType = "brand";
@@ -19,23 +20,19 @@ function Select() {
 
   const [option, setOption] = useState("");
   const onChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    if (currentFilterType !== type) {
+    if (currentFilterType !== type && option) {
       dispatch(selectFilterType(currentFilterType));
     }
     setOption(event.target.value);
   };
 
   useEffect(() => {
-    if (currentFilterType !== type) {
+    if (currentFilterType !== type || !option) {
       return;
     }
     const controller = new AbortController();
     dispatch(fetchIdsFilter({ search: option, abortSignal: controller.signal }));
-    return () => {
-      console.log("abort");
-
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [dispatch, type, option]);
 
   const optionRef = useRef<HTMLOptionElement | null>(null);
@@ -51,23 +48,23 @@ function Select() {
   }, [type]);
 
   return (
-    <div>
-      <label htmlFor={currentFilterType} onClick={onSelect}>
-        {currentFilterType === type ? "!" : ""}Select
-      </label>
-      <br />
-      <select defaultValue={"DEFAULT"} name={currentFilterType} id={currentFilterType} onChange={onChange}>
-        <option value={"DEFAULT"} disabled ref={optionRef}>
-          select option
-        </option>
-        {options.length &&
-          options.map((optionValue) => (
-            <option key={optionValue} value={optionValue}>
-              {optionValue}
-            </option>
-          ))}
-      </select>
-    </div>
+    <Accordion.Item eventKey="1">
+      <article>
+        <Accordion.Header onClick={onSelect}>Бренды</Accordion.Header>
+        <Accordion.Body>
+          <Form.Label htmlFor={currentFilterType}>выберете бренд</Form.Label>
+          <Form.Select defaultValue="DEFAULT" name={currentFilterType} id={currentFilterType} onChange={onChange}>
+            <option value="DEFAULT" disabled ref={optionRef}></option>
+            {options.length &&
+              options.map((optionValue) => (
+                <option key={optionValue} value={optionValue}>
+                  {optionValue}
+                </option>
+              ))}
+          </Form.Select>
+        </Accordion.Body>
+      </article>
+    </Accordion.Item>
   );
 }
 
