@@ -1,3 +1,4 @@
+import React from "react";
 import { Card, Placeholder } from "react-bootstrap";
 
 const gen = (min: number, max: number): number => Math.round(min + Math.random() * (max + 1 - min));
@@ -14,10 +15,10 @@ function PendingItem() {
         </Placeholder>
         <Placeholder as={Card.Text} animation="glow">
           {Array.from({ length: gen(4, 6) }).map((_, ind) => (
-            <>
-              <Placeholder key={ind} xs={gen(1, 5)} />
+            <React.Fragment key={ind}>
+              <Placeholder xs={gen(1, 5)} />
               {"\t"}
-            </>
+            </React.Fragment>
           ))}
           <Placeholder xs={1} />
         </Placeholder>

@@ -4,7 +4,7 @@ import axiosInstance from "@utils/axios";
 import { fetchFilterOptions, fetchIdsFilter } from "@store/slices/filter";
 import { rootState } from "@store/index";
 
-const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async (abortSignal: AbortSignal) => {
+const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async (abortSignal: AbortSignal, thunkAPI) => {
   const fetch = async () => {
     const { data }: { data: string[] } = await axiosInstance.post(
       "/",
@@ -26,7 +26,10 @@ const fetchIdsAll = createAsyncThunk("items/fetchIdsAll", async (abortSignal: Ab
     const ids = await fetch();
     return ids;
   } catch (error) {
-    if (error instanceof Error || axios.isCancel(error)) {
+    if (error instanceof SyntaxError) {
+      console.error(error.message);
+      thunkAPI.dispatch(fetchIdsAll(abortSignal));
+    } else if (error instanceof Error || axios.isCancel(error)) {
       console.error(error.message);
     } else {
       console.error(error);
@@ -74,7 +77,10 @@ const loadCurrentPage = createAsyncThunk("items/loadCurrentPage", async (abortSi
     const items = await fetch();
     return items;
   } catch (error) {
-    if (error instanceof Error || axios.isCancel(error)) {
+    if (error instanceof SyntaxError) {
+      console.error(error.message);
+      thunkAPI.dispatch(loadCurrentPage(abortSignal));
+    } else if (error instanceof Error || axios.isCancel(error)) {
       console.error(error.message);
     } else {
       console.error(error);

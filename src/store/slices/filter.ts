@@ -3,7 +3,7 @@ import axios from "axios";
 import axiosInstance from "@utils/axios";
 import { rootState } from "@store/index";
 
-const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (type: string) => {
+const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (type: string, thunkAPI) => {
   const fetch = async () => {
     const { data }: { data: (string | number)[] } = await axiosInstance.post(
       "/",
@@ -38,7 +38,10 @@ const fetchFilterOptions = createAsyncThunk("filter/fetchFilterOptions", async (
       entities,
     };
   } catch (error) {
-    if (error instanceof Error || axios.isCancel(error)) {
+    if (error instanceof SyntaxError) {
+      console.error(error.message);
+      thunkAPI.dispatch(fetchFilterOptions(type));
+    } else if (error instanceof Error || axios.isCancel(error)) {
       console.error(error.message);
     } else {
       console.error(error);
@@ -80,7 +83,10 @@ const fetchIdsFilter = createAsyncThunk(
     try {
       return await fetch();
     } catch (error) {
-      if (error instanceof Error || axios.isCancel(error)) {
+      if (error instanceof SyntaxError) {
+        console.error(error.message);
+        thunkAPI.dispatch(fetchIdsFilter(payload));
+      } else if (error instanceof Error || axios.isCancel(error)) {
         console.error(error.message);
       } else {
         console.error(error);
