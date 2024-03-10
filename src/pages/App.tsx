@@ -12,7 +12,10 @@ const router = createBrowserRouter(
       <Route index element={<Main />} />
       <Route path="*" element={<Navigate to="/" replace={true} />} />
     </Route>
-  )
+  ),
+  {
+    basename: import.meta.env.BASE_URL,
+  }
 );
 
 function App() {
@@ -22,10 +25,10 @@ function App() {
     const timeoutId = setTimeout(() => dispatch(init(controller.signal)));
     return () => {
       clearTimeout(timeoutId);
-      controller.abort()
+      controller.abort();
     };
   }, [dispatch]);
-  
+
   return <RouterProvider router={router} />;
 }
 
