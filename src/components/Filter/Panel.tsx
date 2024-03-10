@@ -25,8 +25,7 @@ function PanelFilter() {
 
   return (
     <section>
-      <Container className="py-2 h6">Фильтрация
-      </Container>
+      <Container className="py-2 mb-3 h5">Фильтрация</Container>
       <Accordion defaultActiveKey="0">
         <Search />
         <Select />

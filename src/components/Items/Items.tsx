@@ -6,7 +6,7 @@ import { rootState } from "@store/index";
 function Items() {
   const items = useSelector((state: rootState) => state.items.items);
   return (
-    <Row sm={1} md={2} lg={3} className="g-3">
+    <Row xs={1} sm={2} md={3} lg={3} xl={4} xxl={5} className="g-3">
       {items.length ?
         items.map((item) => (
           <Col key={item.id}>

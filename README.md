@@ -22,6 +22,7 @@ The test task involved developing a web application using the provided API to cr
 
 ```bash
 https://github.com/Auqpiro/jewelry-store.git
+cd jewelry-store
 make install
 ```
 

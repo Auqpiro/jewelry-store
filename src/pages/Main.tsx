@@ -5,19 +5,19 @@ import Pagination from "@components/Pagination";
 
 function Main() {
   return (
-    <main>
-      <Container>
-        <Row>
-          <Col xs={3}>
-            <PanelFilter />
-          </Col>
-          <Col xs={9}>
+    <Container className="mb-5">
+      <Row>
+        <Col lg={3} xl={3} xxl={2} className="d-none d-lg-block">
+          <PanelFilter />
+        </Col>
+        <Col xs={12} lg={9} xl={9} xxl={10}>
+          <Container className="d-none d-lg-block mb-3">
             <Pagination />
-            <PanelItems />
-          </Col>
-        </Row>
-      </Container>
-    </main>
+          </Container>
+          <PanelItems />
+        </Col>
+      </Row>
+    </Container>
   );
 }
 

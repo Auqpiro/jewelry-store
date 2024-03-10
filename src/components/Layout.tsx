@@ -6,6 +6,7 @@ import { Container, Navbar } from "react-bootstrap";
 import Logo from "@components/Logo";
 import { appDispatch } from "@store/index";
 import { selectFilterType } from "@store/slices/filter";
+import Footer from "./Footer";
 
 function Layout() {
   const [click, setClick] = useState(0);
@@ -24,7 +25,7 @@ function Layout() {
 
   return (
     <>
-      <header>
+      <header className="pb-3">
         <Navbar>
           <Container>
             <Navbar.Brand href="#" onClick={onClick}>
@@ -34,7 +35,12 @@ function Layout() {
           </Container>
         </Navbar>
       </header>
-      <Outlet />
+      <main>
+        <Outlet />
+      </main>
+      <footer className="d-lg-none fixed-bottom border-top bg-light py-3">
+        <Footer />
+      </footer>
     </>
   );
 }

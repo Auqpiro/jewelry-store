@@ -5,7 +5,7 @@ import { ReactNode } from "react";
 function PendingItems() {
   const arrayOfPending: ReactNode[] = Array.from({ length: 50 });
   return (
-    <Row sm={1} md={3} className="g-3">
+    <Row xs={1} sm={2} md={3} lg={3} xl={4} xxl={5} className="g-3">
       {arrayOfPending &&
         arrayOfPending.map((_, ind) => (
           <Col key={ind}>

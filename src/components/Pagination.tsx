@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useThrottle } from "@hooks/useThrottle";
 import { changePage } from "@store/slices/pagination";
 import { loadCurrentPage } from "@store/slices/items";
-import { Container, Pagination as Page } from "react-bootstrap";
+import { Pagination as Page } from "react-bootstrap";
 import { appDispatch, rootState } from "@store/index";
 
 function Pagination() {
@@ -38,15 +38,15 @@ function Pagination() {
   }, [currentPage]);
 
   return (
-    <Container>
-      <Page size="sm" className="justify-content-center">
+    <React.Fragment>
+      <Page className="justify-content-center mb-0">
         <Page.Prev onClick={prev} disabled={page === 1} />
         <Page.Item>
           {page}/{maxPage}
         </Page.Item>
         <Page.Next onClick={next} disabled={page === maxPage} />
       </Page>
-    </Container>
+    </React.Fragment>
   );
 }
 
